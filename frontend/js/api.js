@@ -45,7 +45,7 @@ class API {
 	}
 
 	async createInvoice(data) {
-		return this.request("/invoices", {
+		return this.request("/invoice", {
 			method: "POST",
 			body: JSON.stringify(data),
 		});

@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { CUSTOMERS } from './data/customer';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+  getCustomers(): { [key: string]: string }[] {
+    return CUSTOMERS;
   }
 }
