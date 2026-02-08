@@ -1,37 +1,51 @@
 export const CUSTOMERS = [
   {
-    id: '1',
+    id: 'b94d5e2a-5e82-4c9f-bd31-9ff2b6c976d8',
     name: 'John Doe',
     email: 'john@example.com',
     phone: '+1234567890',
     address: '123 Main St, New York, NY 10001',
   },
   {
-    id: '2',
+    id: 'c2f2c3d8-b107-4b5f-828f-65e9de302b17',
     name: 'Jane Smith',
     email: 'jane@example.com',
     phone: '+1234567891',
     address: '456 Oak Ave, Los Angeles, CA 90001',
   },
   {
-    id: '3',
+    id: 'f8d07db8-cc89-452f-b1b6-eed343e0d142',
     name: 'Acme Corporation',
     email: 'contact@acme.com',
     phone: '+1234567892',
     address: '789 Business Blvd, Chicago, IL 60601',
   },
   {
-    id: '4',
+    id: '1e2f363b-46c4-49d8-9625-7d60cb1009b0',
+    name: 'Beta Industries',
+    email: 'info@beta.com',
+    phone: '+1234567893',
+    address: '101 Industrial Way, Boston, MA 02101',
+  },
+  {
+    id: '2790ffbd-d851-4d01-8bb8-884c0522ef24',
+    name: 'Gamma Services',
+    email: 'support@gamma.com',
+    phone: '+1234567894',
+    address: '202 Service St, Miami, FL 33101',
+  },
+  {
+    id: '321c8f0a-7c4d-4b2e-9c5f-8a1b2c3d4e5f',
     name: 'Tech Solutions Ltd',
     email: 'info@techsolutions.com',
     phone: '+1234567893',
     address: '321 Innovation Dr, San Francisco, CA 94102',
   },
   {
-    id: '5',
+    id: '4a5b6c7d-8e9f-4a1b-9c2d-3e4f5g6h7i8j',
     name: 'Global Enterprises',
     email: 'sales@globalent.com',
     phone: '+1234567894',
     address: '654 Commerce St, Houston, TX 77001',
   },
-]
+];

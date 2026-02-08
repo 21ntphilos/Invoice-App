@@ -20,6 +20,7 @@ class API {
 				throw new Error(error.message || "Something went wrong");
 			}
 
+
 			return await response.json();
 		} catch (error) {
 			console.error("API Error:", error);
@@ -37,11 +38,11 @@ class API {
 		if (filters.customerId) params.append("customerId", filters.customerId);
 
 		const queryString = params.toString();
-		return this.request(`/invoices/all${queryString ? `?${queryString}` : ""}`);
+		return this.request(`/invoice/all${queryString ? `?${queryString}` : ""}`);
 	}
 
 	async getInvoice(id) {
-		return this.request(`/invoices/${id}`);
+		return this.request(`/invoice/${id}`);
 	}
 
 	async createInvoice(data) {
@@ -52,14 +53,14 @@ class API {
 	}
 
 	async updateInvoice(id, data) {
-		return this.request(`/invoices/${id}`, {
+		return this.request(`/invoice/${id}`, {
 			method: "PATCH",
 			body: JSON.stringify(data),
 		});
 	}
 
 	async deleteInvoice(id) {
-		return this.request(`/invoices/${id}`, {
+		return this.request(`/invoice/${id}`, {
 			method: "DELETE",
 		});
 	}
@@ -70,7 +71,7 @@ class API {
 		formData.append("file", file);
 
 		const response = await fetch(
-			`${API_BASE_URL}/invoices/${invoiceId}/files`,
+			`${API_BASE_URL}/invoice/${invoiceId}/files`,
 			{
 				method: "POST",
 				body: formData,
@@ -85,13 +86,13 @@ class API {
 	}
 
 	async deleteFile(fileId) {
-		return this.request(`/invoices/files/${fileId}`, {
+		return this.request(`/invoice/files/${fileId}`, {
 			method: "DELETE",
 		});
 	}
 
 	getFileDownloadUrl(fileId) {
-		return `${API_BASE_URL}/invoices/files/${fileId}/download`;
+		return `${API_BASE_URL}/invoice/files/${fileId}/download`;
 	}
 
 	// Customers

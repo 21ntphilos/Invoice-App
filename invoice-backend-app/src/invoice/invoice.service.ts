@@ -65,10 +65,17 @@ export class InvoiceService {
     return await this.invoiceRepository.save(await invoice);
   }
 
-  findAll(options?: InvoiceFindOptions): Promise<Invoice[]> {
-    return this.invoiceRepository.findAll(options);
-  }
+  async findAll(options?: InvoiceFindOptions)
+  // : Promise<Invoice[]>
+   {
 
+
+    console.log('Finding invoices with options:', options);
+    const invoices = await this.invoiceRepository.findAllPaginated(options);
+    console.log('Found invoices:', invoices);
+    return invoices;
+  }
+ 
   async findOne(id: string) {
     return this.invoiceRepository.findById(id);
   }

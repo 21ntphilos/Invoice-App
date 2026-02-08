@@ -14,7 +14,7 @@ class InvoiceList {
 			const invoiceresponse = await api.getInvoices(filters);
             this.invoices = invoiceresponse.data
 
-            console.log("INVOICES ===>",this.invoices)
+            console.log("INVOICES ===>", this.invoices);
 			this.render();
 		} catch (error) {
 			console.error("Error loading invoices:", error);
@@ -69,7 +69,7 @@ class InvoiceList {
                     </div>
                     <div class="invoice-info">
                         <div class="invoice-info-label">Total Amount</div>
-                        <div class="invoice-total">$${parseFloat(invoice.totalAmount).toFixed(2)}</div>
+                        <div class="invoice-total">$${parseFloat(invoice.total).toFixed(2)}</div>
                     </div>
                 </div>
                 <div class="invoice-card-footer" onclick="event.stopPropagation()">
@@ -114,7 +114,7 @@ class InvoiceList {
                 <div style="display: flex; justify-content: space-between; align-items: start;">
                     <div>
                         <h2>${invoice.invoiceNumber}</h2>
-                        <p style="color: var(--text-muted); margin-top: 4px;">${invoice.customer.name}</p>
+                        <p style="color: var(--text-muted); margin-top: 4px;">${invoice.customerName}</p>
                     </div>
                     <span class="invoice-status ${statusClass}">${statusText}</span>
                 </div>
@@ -133,14 +133,14 @@ class InvoiceList {
                     </div>
                     <div class="detail-item">
                         <div class="detail-label">Customer Email</div>
-                        <div class="detail-value">${invoice.customer.email}</div>
+                        <div class="detail-value">${invoice.customerEmail}</div>
                     </div>
                     ${
-											invoice.customer.phone
+											invoice.customerPhone
 												? `
                     <div class="detail-item">
                         <div class="detail-label">Customer Phone</div>
-                        <div class="detail-value">${invoice.customer.phone}</div>
+                        <div class="detail-value">${invoice.customerPhone}</div>
                     </div>
                     `
 												: ""
@@ -188,7 +188,7 @@ class InvoiceList {
                     </div>
                     <div class="summary-row">
                         <span>Tax (${invoice.taxRate}%):</span>
-                        <span>$${parseFloat(invoice.taxAmount).toFixed(2)}</span>
+                        <span>$${parseFloat((invoice.subtotal - invoice.discount) * (invoice.taxRate / 100)).toFixed(2)}</span>
                     </div>
                     <div class="summary-row total">
                         <span>Total:</span>

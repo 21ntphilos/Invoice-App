@@ -7,6 +7,7 @@ export interface InvoiceFindOptions extends FindManyOptions<Invoice> {
   startDate?: Date;
   endDate?: Date;
   paymentStatus?: PaymentStatus;
+  customerId?: string;
   limit?: number;
   page?: number;
 }
@@ -38,38 +39,68 @@ export class InvoiceRepository extends BaseRepository<Invoice> {
     });
   }
 
-  findAll(options?: InvoiceFindOptions): Promise<Invoice[]> {
-    const qb = this.buildFilterQuery({
-      alias: 'invoice',
-      relations: ['items', 'files'],
-      order: { createdAt: 'DESC' },
+async findAll(options?: InvoiceFindOptions): Promise<Invoice[]> {
+  const invoices = await this.findAllPaginated(options);
+  return invoices.data;
+}
+
+async findAllPaginated(options?: InvoiceFindOptions) {
+  const {
+    paymentStatus,
+    customerId,
+    startDate,
+    endDate,
+    page = 1,
+    limit = 10,
+  } = options || {};
+
+
+  const qb = this.buildFilterQuery({
+    alias: 'invoice',
+    relations: ['items', 'files'],
+    order: { createdAt: 'DESC' },
+  });
+
+  if (startDate && endDate) {
+    qb.andWhere('invoice.invoiceDate BETWEEN :startDate AND :endDate', {
+      startDate,
+      endDate,
     });
-
-    if (options?.startDate && options?.endDate) {
-      qb.andWhere('invoice.createdAt BETWEEN :startDate AND :endDate', {
-        startDate: options.startDate,
-        endDate: options.endDate,
-      });
-    } else if (options?.startDate) {
-      qb.andWhere('invoice.createdAt >= :startDate', {
-        startDate: options.startDate,
-      });
-    } else if (options?.endDate) {
-      qb.andWhere('invoice.createdAt <= :endDate', {
-        endDate: options.endDate,
-      });
-    }
-
-    if (options?.paymentStatus) {
-      qb.andWhere('invoice.paymentStatus = :paymentStatus', {
-        paymentStatus: options.paymentStatus,
-      });
-    }
-
-    qb.take(options?.limit || 15);
-    // qb.skip(((options?.page || 1) - 1) * (options?.limit || 15));
-    return qb.getMany();
+  } else if (startDate) {
+    qb.andWhere('invoice.invoiceDate >= :startDate', {
+      startDate: startDate,
+    });
+  } else if (endDate) {
+    qb.andWhere('invoice.invoiceDate <= :endDate', {
+      endDate: endDate,
+    });
   }
+
+  if (paymentStatus) {
+    qb.andWhere('invoice.paymentStatus = :paymentStatus', {
+      paymentStatus: paymentStatus,
+    });
+  }
+
+  if (customerId) {
+    qb.andWhere('invoice.customerId = :customerId', {
+      customerId: customerId,
+    });
+  }
+
+ 
+  qb.skip((page - 1) * limit).take(limit);
+
+     const [data, total] = await qb.getManyAndCount();
+
+     return {
+       data,
+       total,
+       page,
+       lastPage: Math.ceil(total / limit),
+     };
+
+}
 
   update(id: string, data: Partial<Invoice>): Promise<Invoice> {
     return this.repo.save({ ...data, id });

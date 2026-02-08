@@ -33,8 +33,8 @@ export class Invoice {
   @Column()
   customerId: string;
 
-//   @Column({ type: 'date' })
-//   invoiceDate: Date;
+  @Column('date', { nullable: true })
+  invoiceDate: Date;
 
   @Column({ type: 'date' })
   dueDate: Date;

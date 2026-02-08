@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { InvoiceService } from './invoice.service';
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
 import { UpdateInvoiceDto } from './dto/update-invoice.dto';
@@ -12,14 +12,16 @@ export class InvoiceController {
     return this.invoiceService.create(createInvoiceDto);
   }
 
-  @Get()
-  findAll() {
-    return this.invoiceService.findAll();
+  @Get('/all')
+  async findAll(@Query() query: any) {
+    const invoices = await this.invoiceService.findAll(query);
+    console.log('Invoices retrieved in controller:', invoices);
+    return invoices;
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.invoiceService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    return await this.invoiceService.findOne(id);
   }
 
   // @Patch(':id')
