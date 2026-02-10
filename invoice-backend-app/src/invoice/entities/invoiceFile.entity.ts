@@ -16,13 +16,16 @@ export class InvoiceFile {
   invoice: Invoice;
 
   @Column()
-  invoiceId: string;
-
-  @Column()
   fileName: string;
 
+  @Column({ unique: true })
+  googleDriveFileId: string;
+
   @Column()
-  filePath: string;
+  webViewLink: string;
+
+  @Column()
+  webContentLink: string;
 
   @Column()
   fileSize: number;
@@ -31,5 +34,5 @@ export class InvoiceFile {
   mimeType: string;
 
   @CreateDateColumn()
-  uploadedAt: Date;
+  createdAt: Date;
 }

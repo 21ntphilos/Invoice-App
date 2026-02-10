@@ -13,19 +13,19 @@ type QueryOptions<T> = {
   order?: Record<string, 'ASC' | 'DESC'>;
 };
 
-export class BaseRepository<T extends ObjectLiteral> {
+export class BaseRepository<T extends ObjectLiteral > {
   protected repo: Repository<T>;
 
   constructor(repo: Repository<T>) {
     this.repo = repo;
   }
 
-  async create(data: DeepPartial<T>): Promise<T> {
-    return await this.repo.create(data);
+   create(data: DeepPartial<T>): T {
+    return this.repo.create(data);
   }
 
-  save(entity: T): Promise<T> {
-    return this.repo.save(entity);
+  async save(entity: T): Promise<T> {
+    return await  this.repo.save(entity);
   }
 
   async createAndSave(data: DeepPartial<T>): Promise<T> {
@@ -44,6 +44,12 @@ export class BaseRepository<T extends ObjectLiteral> {
 
   async findOne(options: FindOneOptions<T>): Promise<T | null> {
     return this.repo.findOne(options);
+  }
+
+  async findById(id: string): Promise<T | null> {
+    return this.repo.findOne({
+      where: { id } as any,
+    });
   }
 
   //   async update(id: string, data: DeepPartial<T>): Promise<T> {

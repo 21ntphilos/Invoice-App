@@ -10,9 +10,6 @@ export class InvoiceItem {
   invoice: Invoice;
 
   @Column()
-  invoiceId: string;
-
-  @Column()
   description: string;
 
   @Column({ type: 'int' })

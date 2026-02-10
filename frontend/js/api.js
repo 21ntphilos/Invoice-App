@@ -20,8 +20,9 @@ class API {
 				throw new Error(error.message || "Something went wrong");
 			}
 
+			const data = await response.json();
 
-			return await response.json();
+			return data
 		} catch (error) {
 			console.error("API Error:", error);
 			throw error;
@@ -71,9 +72,9 @@ class API {
 		formData.append("file", file);
 
 		const response = await fetch(
-			`${API_BASE_URL}/invoice/${invoiceId}/files`,
+			`${API_BASE_URL}/invoice/${invoiceId}/uploadFile`,
 			{
-				method: "POST",
+				method: "PATCH",
 				body: formData,
 			},
 		);

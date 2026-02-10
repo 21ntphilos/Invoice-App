@@ -166,6 +166,7 @@ class InvoiceForm {
 	}
 
 	populateForm(invoice) {
+		console.log("POPULATE INVOICE=====> ",invoice)
 		document.getElementById("invoiceId").value = invoice.id;
 		document.getElementById("customerId").value = invoice.customerId;
 		document.getElementById("invoiceDate").value =

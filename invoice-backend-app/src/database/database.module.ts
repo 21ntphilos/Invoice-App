@@ -13,7 +13,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         url: config.get<string>('DATABASE_URL'),
         autoLoadEntities: true,
         synchronize: true, 
-        logging: true,
+        logging: false,
       }),
     }),
   ]
