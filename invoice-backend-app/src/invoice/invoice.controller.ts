@@ -43,7 +43,6 @@ export class InvoiceController {
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateInvoiceDto: UpdateInvoiceDto) {
     const upd = await this.invoiceService.update(id, updateInvoiceDto);
-    console.log(upd)
     return upd
   }
 

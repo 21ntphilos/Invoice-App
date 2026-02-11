@@ -11,6 +11,7 @@ import { UploadService } from './upload.service';
 import path from 'path';
 import { InvoiceFileRepository } from '../repositories/invoiceFile.repository';
 import { InvoiceItemRepository } from '../repositories/InvoiceItem.repository';
+import { Console } from 'console';
 
 @Injectable()
 export class InvoiceService {
@@ -77,9 +78,18 @@ export class InvoiceService {
   }
 
   async findAll(options?: InvoiceFindOptions) {
-    // : Promise<Invoice[]>
-    console.log('Finding invoices with options:', options);
+  
     const invoices = await this.invoiceRepository.findAllPaginated(options);
+
+    invoices.data = invoices.data.map(invoice=>{
+      const {subtotal, totalAmount} = this.calculateInvoiceTotal(invoice.items, invoice.taxRate, invoice.discount)
+      return {
+        ...invoice,
+        subtotal,
+        totalAmount
+      }
+    })
+    
     return invoices;
   }
 
@@ -118,30 +128,41 @@ export class InvoiceService {
   async update(id: string, updateInvoiceDto: UpdateInvoiceDto) {
     const updateData = { ...updateInvoiceDto } as unknown as Partial<Invoice>;
 
-    const invoice = await this.invoiceRepository.findOne({ where: { id } });
+   // add functionality for file update 
+    try {
+      
+      const invoice = await this.invoiceRepository.findOne({ where: { id } });
 
-    if (!invoice) {
-      throw new NotFoundException('Invoice not found');
-    }
-
-    if(updateData.items && updateData.items.length < invoice.items.length) {
-   const updatedItems = new Set(updateData.items.map(item => item.id));
-    const itemsToRemove = invoice.items.filter(item => !updatedItems.has(item.id));
-
-    itemsToRemove.forEach(item => {
-      this.invoiceItemRepository.delete(item.id);
-    })
-
-    if(updateData.items) {
+      
+      if (!invoice) {
+        throw new NotFoundException('Invoice not found');
+      }
+      
+      if(updateData.items) {
       updateData.items = updateData.items.map((item) => ({
         ...item,
         amount: item.quantity * item.unitPrice,
         invoice: { id } as Invoice,
       })) as any;
     }
-    
-    return this.invoiceRepository.update(id, updateData);
-  }
+    // test this logic for when you remove an item and add another one 
+      if(updateData.items && updateData.items.length < invoice.items.length) {
+
+     const updatedItems = new Set(updateData.items.map(item => item.id));
+      const itemsToRemove = invoice.items.filter(item => !updatedItems.has(item.id));
+  
+      itemsToRemove.forEach(item => {
+        this.invoiceItemRepository.delete(item.id);
+      })
+  
+  
+    }
+      
+      return this.invoiceRepository.update(id, updateData);
+
+    } catch (error) {
+      console.log(error)
+    }
 
 }
 
