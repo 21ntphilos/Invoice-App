@@ -107,15 +107,15 @@ export class InvoiceService {
     const ext = path.extname(file.originalname);
     const filename = `invoice-${uniqueSuffix}${ext}`;
 
-    const { id, webViewLink, webContentLink } =
-      await this.uploadService.uploadFile(file, filename);
+    // const { id, webViewLink, webContentLink } =
+    //   await this.uploadService.uploadFile(file, filename);
+
+    const key = await this.uploadService.uploadFile(file, filename);
 
     const invoiceFile = this.invoiceFileRepository.create({
       fileName: file.originalname,
-      webViewLink,
-      webContentLink,
       invoice,
-      googleDriveFileId: id,
+       fileStorageId: key,
       fileSize: file.size,
       mimeType: file.mimetype,
     });
@@ -155,7 +155,6 @@ export class InvoiceService {
         this.invoiceItemRepository.delete(item.id);
       })
   
-  
     }
       
       return this.invoiceRepository.update(id, updateData);
@@ -187,7 +186,7 @@ export class InvoiceService {
       throw new NotFoundException('File not found');
     }
 
-    await this.uploadService.deleteFile(file.googleDriveFileId);
+    await this.uploadService.deleteFile(file.fileStorageId);
     return await this.invoiceFileRepository.delete(fileId);
   }
 }

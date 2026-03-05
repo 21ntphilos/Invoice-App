@@ -19,13 +19,13 @@ export class InvoiceFile {
   fileName: string;
 
   @Column({ unique: true })
-  googleDriveFileId: string;
+  fileStorageId: string;
 
-  @Column()
-  webViewLink: string;
+  // @Column()
+  // webViewLink: string;
 
-  @Column()
-  webContentLink: string;
+  // @Column()
+  // webContentLink: string;
 
   @Column()
   fileSize: number;
