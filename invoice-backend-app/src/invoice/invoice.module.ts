@@ -9,9 +9,25 @@ import { Invoice } from './entities/invoice.entity';
 import { UploadService } from './services/upload.service';
 import { InvoiceFileRepository } from './repositories/invoiceFile.repository';
 import { InvoiceItemRepository } from './repositories/InvoiceItem.repository';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Invoice, InvoiceFile, InvoiceItem])],
+  imports: [TypeOrmModule.forFeature([Invoice, InvoiceFile, InvoiceItem]), ClientsModule.register([
+      {
+      name: 'NOTIFICATION_SERVICE',
+      transport: Transport.KAFKA,
+      options: {
+        client: {
+          clientId: 'notification-service',
+          brokers: ['localhost:9092'],
+        },
+        consumer:{
+          groupId: 'notification-service-group',
+        }
+        
+      },
+    }
+  ]), ],
   controllers: [InvoiceController],
   providers: [InvoiceRepository,InvoiceItemRepository, InvoiceFileRepository, InvoiceService, UploadService],
   

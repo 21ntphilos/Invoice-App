@@ -5,12 +5,16 @@ import { DatabaseModule } from './database/database.module';
 import { InvoiceModule } from './invoice/invoice.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { group } from 'console';
 
 @Module({
   imports: [
+
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    
     DatabaseModule,
     InvoiceModule,
   ],

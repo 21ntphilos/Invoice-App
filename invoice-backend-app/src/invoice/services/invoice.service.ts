@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateInvoiceDto } from '../dto/create-invoice.dto';
 import { UpdateInvoiceDto } from '../dto/update-invoice.dto';
 import { Invoice } from '../entities/invoice.entity';
@@ -11,7 +11,8 @@ import { UploadService } from './upload.service';
 import path from 'path';
 import { InvoiceFileRepository } from '../repositories/invoiceFile.repository';
 import { InvoiceItemRepository } from '../repositories/InvoiceItem.repository';
-import { Console } from 'console';
+import { ClientKafka } from '@nestjs/microservices';
+import { CreateInvoiceEvent } from '../dto/event_dto/createInvoiceEvent.dto';
 
 @Injectable()
 export class InvoiceService {
@@ -20,6 +21,7 @@ export class InvoiceService {
     private uploadService: UploadService,
     private invoiceFileRepository: InvoiceFileRepository,
     private invoiceItemRepository: InvoiceItemRepository,
+    @Inject('NOTIFICATION_SERVICE') private readonly notificationClient: ClientKafka
   ) {}
 
   private getCustomer = (id: string): { [key: string]: string } => {
@@ -74,7 +76,15 @@ export class InvoiceService {
       items,
     });
 
-    return await this.invoiceRepository.save(await invoice);
+    const created = await this.invoiceRepository.save( invoice);
+    this.notificationClient.emit('invoice.created', new CreateInvoiceEvent(
+      created.customerName,
+      created.customerEmail,
+      created.total,
+      created.invoiceNumber
+    ));
+
+    return created;
   }
 
   async findAll(options?: InvoiceFindOptions) {
