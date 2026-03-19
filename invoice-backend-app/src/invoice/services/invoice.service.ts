@@ -12,7 +12,8 @@ import path from 'path';
 import { InvoiceFileRepository } from '../repositories/invoiceFile.repository';
 import { InvoiceItemRepository } from '../repositories/InvoiceItem.repository';
 import { ClientKafka } from '@nestjs/microservices';
-import { CreateInvoiceEvent } from '../dto/event_dto/createInvoiceEvent.dto';
+import { CreateInvoiceEvent, NotificationChannel, NotificationType } from '../dto/event_dto/createInvoiceEvent.dto';
+
 
 @Injectable()
 export class InvoiceService {
@@ -81,7 +82,10 @@ export class InvoiceService {
       created.customerName,
       created.customerEmail,
       created.total,
-      created.invoiceNumber
+      created.invoiceNumber,
+      NotificationChannel.email,
+      NotificationType.created,
+      created.customerId
     ));
 
     return created;
